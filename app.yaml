@@ -1,0 +1,59 @@
+# Databricks App Configuration for DoughSight IQ (Little Caesars Store Ops)
+# Docs: https://docs.databricks.com/aws/en/dev-tools/databricks-apps/
+#
+# IMPORTANT: Before deploying, build the frontend:
+#   cd frontend && npm install && npm run build
+#
+# The FastAPI backend serves the built React frontend from frontend/dist/
+#
+# Adapted for the DEFAULT workspace (fe-vm-jdub-vm-serverless):
+#   - Unity Catalog target: jdub_demo.lce_store_ops
+#   - WORKSPACE_ID set to this workspace's org id
+#   - Lakebase disabled (optional streaming feature) -> the app degrades gracefully
+#   - ML model-serving endpoints not deployed -> the app returns simulated forecasts
+
+command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+env:
+  # === Application Title ===
+  - name: "APP_TITLE"
+    value: "DoughSight IQ"
+
+  # === Databricks SQL Warehouse ===
+  # Links to a SQL Warehouse resource configured on the app (key: sql_warehouse)
+  - name: "DATABRICKS_WAREHOUSE_ID"
+    valueFrom: "sql_warehouse"
+
+  # === Unity Catalog ===
+  - name: "CATALOG_NAME"
+    value: "jdub_demo"
+  - name: "SCHEMA_NAME"
+    value: "lce_store_ops"
+
+  # === Model Serving Endpoint Names ===
+  # Not deployed in this build. The app checks endpoint health and falls back to
+  # realistic simulated data when the endpoints are absent, so these are harmless.
+  - name: "DEMAND_FORECAST_ENDPOINT"
+    value: "lce-demand-forecast"
+  - name: "LABOR_OPTIMIZER_ENDPOINT"
+    value: "lce-labor-optimizer"
+  - name: "INVENTORY_PREDICTOR_ENDPOINT"
+    value: "lce-inventory-predictor"
+  - name: "DOUGH_SCHEDULER_ENDPOINT"
+    value: "lce-dough-scheduler"
+
+  # === Genie Space ===
+  # Attached as an app resource (key: genie_space); the platform injects the space id.
+  - name: "GENIE_SPACE_ID"
+    valueFrom: "genie_space"
+
+  # Workspace/org id used to build the Genie embed iframe URL (?o=...).
+  # DATABRICKS_HOST is auto-injected by the Apps platform at runtime.
+  - name: "WORKSPACE_ID"
+    value: "66306676349647"
+
+  # === External APIs ===
+  # Optional: Ticketmaster API for local events (affects demand-forecast context).
+  # Filled from config.local.env by scripts/deploy.sh; never commit the real key.
+  - name: "TICKETMASTER_API_KEY"
+    value: "{{TICKETMASTER_API_KEY}}"

@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en" class="halloween">
+<head>
+<meta charset="utf-8" />
+<title>DoughSight IQ: Halloween theme mockup</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  /* Light tokens = today's app. Halloween tokens = the plan's palette. */
+  :root {
+    --bg: #FFF8F3; --surface: #FFFFFF; --surface-2: #FFF8F3; --border: #F3F4F6;
+    --text: #1A1A1A; --text-2: #6B7280; --text-3: #9CA3AF;
+    --orange: #FF6000; --orange-2: #FF8844; --accent: #1A1A1A; --accent-soft: #F3F4F6;
+    --grid: #F0F0F0; --chip-blue-bg: #EFF6FF; --chip-blue: #1D4ED8; --chip-bg: #F3F4F6; --chip: #374151;
+    --shadow: 0 2px 8px rgba(0,0,0,.04);
+  }
+  html.halloween {
+    --bg: #120D18; --surface: #1E1726; --surface-2: #2A2033; --border: #3A2E47;
+    --text: #F5EFE6; --text-2: #B8AFC4; --text-3: #857C93;
+    --orange: #FF6000; --orange-2: #FF9A4D; --accent: #B57BFF; --accent-soft: rgba(181,123,255,.15);
+    --grid: #2E2538; --chip-blue-bg: rgba(181,123,255,.15); --chip-blue: #B57BFF; --chip-bg: #2A2033; --chip: #E8DCC8;
+    --shadow: 0 0 0 1px #3A2E47, 0 8px 32px rgba(0,0,0,.45);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, Inter, system-ui, sans-serif;
+         background: var(--bg); color: var(--text); transition: background .4s, color .4s; }
+  html.halloween body { background: radial-gradient(1200px 600px at 80% -10%, rgba(109,40,217,.28), transparent 60%), var(--bg); }
+
+  header { position: sticky; top: 0; z-index: 20; height: 64px; display: flex; align-items: center; gap: 16px;
+           padding: 0 24px; background: color-mix(in srgb, var(--surface) 85%, transparent);
+           backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); }
+  .lockup { height: 30px; }
+  html:not(.halloween) .lockup { mix-blend-mode: multiply; }
+  .mascot { position: relative; width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center;
+            background: var(--surface-2); }
+  .mascot img { width: 34px; }
+  .mascot .slot { display: none; }
+  html.halloween .mascot { outline: 2px dashed var(--accent); outline-offset: 2px; }
+  html.halloween .mascot .slot { display: block; position: absolute; top: 52px; left: -6px; width: 170px; font-size: 10px;
+           color: var(--accent); line-height: 1.3; }
+  .divider { width: 1px; height: 32px; background: var(--border); }
+  .who h1 { margin: 0; font-size: 14px; font-weight: 600; }
+  .who p { margin: 0; font-size: 12px; color: var(--text-2); }
+  nav { margin: 0 auto; display: flex; gap: 2px; background: var(--surface-2); border-radius: 16px; padding: 6px; }
+  nav a { padding: 9px 18px; border-radius: 12px; font-size: 14px; font-weight: 500; color: var(--text-2); text-decoration: none; }
+  nav a.on { background: var(--surface); color: var(--orange); box-shadow: var(--shadow); }
+
+  .toggle { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text-2); cursor: pointer; user-select: none;
+            padding: 8px 12px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface); }
+  .switch { width: 38px; height: 22px; border-radius: 11px; background: #D1D5DB; position: relative; transition: background .3s; }
+  .switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%;
+                   background: #fff; transition: transform .3s; }
+  html.halloween .switch { background: linear-gradient(90deg, #6D28D9, var(--orange)); }
+  html.halloween .switch::after { transform: translateX(16px); }
+
+  main { max-width: 1240px; margin: 0 auto; padding: 24px; position: relative; z-index: 2; }
+  .persona { display: inline-flex; gap: 8px; align-items: center; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 500;
+             color: #D64A00; background: rgba(255,96,0,.18); border: 1px solid rgba(255,96,0,.3); margin-bottom: 18px; }
+  html.halloween .persona { color: var(--orange-2); }
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 16px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; box-shadow: var(--shadow); padding: 22px; }
+  .kpi .label { font-size: 12px; color: var(--text-2); }
+  .kpi .value { font-size: 28px; font-weight: 600; margin-top: 6px; }
+  .kpi .delta { font-size: 12px; margin-top: 4px; color: #16A34A; }
+  html.halloween .kpi .delta { color: #7CE38B; }
+  .kpi .delta.down { color: #DC2626; }
+  html.halloween .kpi .delta.down { color: #F87171; }
+  .grid2 { display: grid; grid-template-columns: 1.6fr 1fr; gap: 16px; }
+  .head { display: flex; gap: 14px; align-items: center; margin-bottom: 18px; }
+  .icon { width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; background: rgba(255,96,0,.12); color: var(--orange); font-size: 20px; }
+  .head h2 { margin: 0; font-size: 18px; font-weight: 600; }
+  .head p { margin: 2px 0 0; font-size: 14px; color: var(--text-2); }
+
+  .chart { position: relative; height: 250px; display: grid; grid-template-columns: 34px 1fr; }
+  .yaxis { display: flex; flex-direction: column; justify-content: space-between; font-size: 12px; color: var(--text-3); padding-bottom: 24px; text-align: right; padding-right: 8px; }
+  .plot { position: relative; display: flex; align-items: flex-end; gap: 4%; padding: 0 2% 24px;
+          background: repeating-linear-gradient(to top, var(--grid) 0 1px, transparent 1px calc((100% - 24px) / 4)); background-size: 100% calc(100% - 24px); background-repeat: repeat-x; }
+  .bar { flex: 1; position: relative; border-radius: 8px 8px 0 0; background: var(--orange); transition: background .4s, box-shadow .4s; }
+  html.halloween .bar { background: linear-gradient(180deg, #FF7A1F, #E14F00); box-shadow: 0 0 18px rgba(255,96,0,.25); }
+  html.halloween .bar.event { background: linear-gradient(180deg, #C79BFF, #7C3AED); box-shadow: 0 0 22px rgba(181,123,255,.45); }
+  .bar span { position: absolute; bottom: -22px; left: 0; right: 0; text-align: center; font-size: 12px; color: var(--text-3); }
+  .bar b { position: absolute; top: -18px; left: 0; right: 0; text-align: center; font-size: 11px; color: var(--text-2); font-weight: 500; }
+  .factors { border-top: 1px solid var(--border); margin-top: 18px; padding-top: 14px; font-size: 13px; color: var(--text-2); }
+  .chips { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+  .chip { padding: 6px 12px; border-radius: 12px; font-size: 14px; background: var(--chip-bg); color: var(--chip); }
+  .chip.blue { background: var(--chip-blue-bg); color: var(--chip-blue); }
+  .legend { display: flex; gap: 16px; font-size: 12px; color: var(--text-2); margin-top: 10px; }
+  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+
+  .recs li { list-style: none; padding: 12px 14px; border-radius: 14px; background: var(--surface-2); margin-bottom: 10px; font-size: 14px; }
+  .recs ul { padding: 0; margin: 0; }
+  .recs small { display: block; color: var(--text-2); margin-top: 3px; font-size: 12px; }
+  .tag { float: right; font-size: 11px; padding: 2px 8px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); }
+
+  /* Spooky decor layer: never takes clicks */
+  .decor { position: fixed; inset: 0; pointer-events: none; z-index: 5; display: none; }
+  html.halloween .decor { display: block; }
+  .web { position: absolute; width: 230px; height: 230px; opacity: .28; }
+  .web.tl { top: 64px; left: 0; }
+  .web.br { bottom: 0; right: 0; transform: rotate(180deg); }
+  .bat { position: absolute; width: 56px; animation: drift 18s ease-in-out infinite; }
+  .bat svg { width: 100%; animation: flap .35s ease-in-out infinite alternate; transform-origin: 50% 60%; }
+  .bat.b2 { width: 38px; animation-duration: 23s; animation-delay: -6s; }
+  .bat.b3 { width: 30px; animation-duration: 27s; animation-delay: -12s; }
+  .bat.b4 { width: 46px; animation-duration: 21s; animation-delay: -3s; }
+  @keyframes flap { from { transform: scaleY(1); } to { transform: scaleY(.45); } }
+  @keyframes drift {
+    0% { transform: translate(var(--x0), var(--y0)); } 50% { transform: translate(var(--x1), var(--y1)); } 100% { transform: translate(var(--x0), var(--y0)); }
+  }
+  @media (prefers-reduced-motion: reduce) { .bat, .bat svg { animation: none; } }
+
+  .note { max-width: 1240px; margin: 8px auto 40px; padding: 0 24px; font-size: 12px; color: var(--text-3); position: relative; z-index: 2; }
+</style>
+</head>
+<body>
+<header>
+  <img class="lockup" src="../../frontend/public/lc-logo.svg" alt="Little Caesars" />
+  <div class="mascot" title="Swaps to Count Little Caesars in dark mode">
+    <img src="../../frontend/public/lc-mark.svg" alt="" />
+    <div class="slot">↑ Count Little Caesars art<br/>(your file: count-caesar.png)</div>
+  </div>
+  <div class="divider"></div>
+  <div class="who"><h1>Store Manager</h1><p>Detroit Woodward Ave</p></div>
+  <nav>
+    <a>Operations</a><a class="on">Forecast</a><a>Labor</a><a>Inventory</a><a>Dough HQ</a>
+  </nav>
+  <div class="toggle" onclick="document.documentElement.classList.toggle('halloween')">
+    <span id="tlabel">🦇 Dark mode</span><div class="switch"></div>
+  </div>
+</header>
+
+<div class="decor" aria-hidden="true">
+  <svg class="web tl" viewBox="0 0 230 230" id="web1"></svg>
+  <svg class="web br" viewBox="0 0 230 230" id="web2"></svg>
+  <div class="bat b1" style="--x0:62vw;--y0:90px;--x1:80vw;--y1:150px"></div>
+  <div class="bat b2" style="--x0:20vw;--y0:110px;--x1:36vw;--y1:70px"></div>
+  <div class="bat b3" style="--x0:88vw;--y0:420px;--x1:70vw;--y1:360px"></div>
+  <div class="bat b4" style="--x0:4vw;--y0:520px;--x1:14vw;--y1:460px"></div>
+</div>
+
+<main>
+  <div class="persona">📍 Store Manager View</div>
+
+  <div class="kpis">
+    <div class="card kpi"><div class="label">Forecast transactions (7d)</div><div class="value">1,516</div><div class="delta">+4.2% vs last week</div></div>
+    <div class="card kpi"><div class="label">Forecast revenue (7d)</div><div class="value">$18,950</div><div class="delta">+3.8% vs last week</div></div>
+    <div class="card kpi"><div class="label">Peak day</div><div class="value">Tue</div><div class="delta">247 transactions</div></div>
+    <div class="card kpi"><div class="label">Dough balls to prep</div><div class="value">412</div><div class="delta down">+38 for game night</div></div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="head"><div class="icon">📅</div><div><h2>7-Day Forecast</h2><p>Daily transaction predictions</p></div></div>
+      <div class="chart">
+        <div class="yaxis"><span>260</span><span>195</span><span>130</span><span>65</span><span>0</span></div>
+        <div class="plot" id="plot"></div>
+      </div>
+      <div class="legend"><span><i style="background:var(--orange)"></i>Predicted</span><span><i style="background:var(--accent)"></i>Event day</span></div>
+      <div class="factors">Factors impacting forecast:
+        <div class="chips"><span class="chip blue">🎟 Events nearby</span><span class="chip">🌧 Seasonality: winter</span><span class="chip">🎃 Halloween week</span></div>
+      </div>
+    </div>
+    <div class="card recs">
+      <div class="head"><div class="icon">🍕</div><div><h2>Prep Recommendations</h2><p>For the next 3 days</p></div></div>
+      <ul>
+        <li>Mix 60 extra large dough balls Monday <span class="tag">Event</span><small>Red Wings home game, 19,500 expected attendance</small></li>
+        <li>Stage Crazy Bread for 5 to 7 PM rush<small>Dinner daypart forecast +12%</small></li>
+        <li>Pull cold-hold dough by 10:30 AM<small>Temper window 90 to 120 min before lunch</small></li>
+        <li>Add one crew member Tuesday dinner <span class="tag">Staffing</span><small>Peak day of the week</small></li>
+      </ul>
+    </div>
+  </div>
+</main>
+<p class="note">Mockup only (static values from the Forecast screenshot). Toggle the switch to compare against today's light theme. The dashed slot is where the official Count Little Caesars artwork goes; the standard mark is shown until that file is supplied.</p>
+
+<script>
+  const data = [['Fri',228],['Sat',215],['Sun',172],['Mon',245,1],['Tue',247],['Wed',208],['Thu',201]];
+  const plot = document.getElementById('plot');
+  for (const [d, v, ev] of data) {
+    const b = document.createElement('div');
+    b.className = 'bar' + (ev ? ' event' : '');
+    b.style.height = `calc((100% - 24px) * ${v / 260})`;
+    b.innerHTML = `<b>${v}</b><span>${d}</span>`;
+    plot.appendChild(b);
+  }
+  // Cobweb: radial spokes from the corner plus sagging rings
+  for (const id of ['web1', 'web2']) {
+    const svg = document.getElementById(id), angles = [0, 15, 32, 50, 68, 90].map(a => a * Math.PI / 180);
+    let s = '';
+    for (const a of angles) s += `<line x1="0" y1="0" x2="${230 * Math.cos(a)}" y2="${230 * Math.sin(a)}"/>`;
+    for (const r of [40, 75, 112, 150, 190]) {
+      for (let i = 0; i < angles.length - 1; i++) {
+        const [a, b] = [angles[i], angles[i + 1]], m = (a + b) / 2, sag = r * 0.86;
+        s += `<path d="M${r * Math.cos(a)} ${r * Math.sin(a)} Q${sag * Math.cos(m)} ${sag * Math.sin(m)} ${r * Math.cos(b)} ${r * Math.sin(b)}"/>`;
+      }
+    }
+    svg.innerHTML = `<g fill="none" stroke="#E8DCC8" stroke-width="1.2">${s}</g>`;
+  }
+  // Bats (black body, purple rim)
+  const bat = `<svg viewBox="0 0 56 20"><path fill="#0B0710" stroke="#B57BFF" stroke-width=".8" d="M1 9 C7 1 13 3 17 8 C19 5 21 4 24 5 L26 1 L28 5 L30 1 L32 5 C35 4 37 5 39 8 C43 3 49 1 55 9 C51 8 48 10 47 13 C44 10 41 11 39 14 C36 12 33 13 28 17 C23 13 20 12 17 14 C15 11 12 10 9 13 C8 10 5 8 1 9Z"/><circle cx="26.5" cy="7" r=".9" fill="#FF6000"/><circle cx="29.5" cy="7" r=".9" fill="#FF6000"/></svg>`;
+  document.querySelectorAll('.bat').forEach(el => el.innerHTML = bat);
+</script>
+</body>
+</html>

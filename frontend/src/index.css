@@ -1,0 +1,213 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Light theme CSS variables */
+:root {
+  --bg: 255 248 243;
+  --surface-default: 255 255 255;
+  --surface-secondary: 255 248 243;
+  --surface-tertiary: 255 230 212;
+  --border: 243 244 246;
+  --text-primary: 26 26 26;
+  --text-secondary: 107 114 128;
+  --text-tertiary: 156 163 175;
+  --gray-50: 249 250 251;
+  --gray-100: 243 244 246;
+  --gray-200: 229 231 235;
+  --gray-300: 209 213 219;
+  --gray-400: 156 163 175;
+  --red-50: 254 242 242;
+  --red-100: 254 226 226;
+  --red-200: 254 202 202;
+  --red-600: 220 38 38;
+  --red-700: 185 28 28;
+  --green-50: 240 253 244;
+  --green-100: 220 252 231;
+  --green-200: 187 247 208;
+  --green-600: 22 163 74;
+  --green-700: 21 128 61;
+  --amber-50: 255 251 235;
+  --amber-100: 254 243 199;
+  --amber-200: 253 230 138;
+  --amber-600: 217 119 6;
+  --amber-700: 180 83 9;
+  --blue-50: 239 246 255;
+  --blue-100: 219 234 254;
+  --blue-200: 191 219 254;
+  --blue-600: 37 99 235;
+  --blue-700: 29 78 216;
+  --purple-50: 250 245 255;
+  --purple-100: 243 232 255;
+  --purple-200: 232 212 251;
+  --purple-600: 147 51 234;
+  --purple-700: 126 34 206;
+  --orange-100: 255 237 213;
+  --gray-600: 75 85 99;
+  --gray-700: 55 65 81;
+}
+
+/* Dark theme (Halloween) CSS variables */
+html.halloween {
+  --bg: 18 13 24;
+  --surface-default: 30 23 38;
+  --surface-secondary: 42 32 51;
+  --surface-tertiary: 52 42 63;
+  --border: 58 46 71;
+  --text-primary: 245 239 230;
+  --text-secondary: 184 175 196;
+  --text-tertiary: 133 124 147;
+  --gray-50: 36 28 46;
+  --gray-100: 58 46 71;
+  --gray-200: 74 60 90;
+  --gray-300: 96 84 114;
+  --gray-400: 133 124 147;
+  --red-50: 48 20 28;
+  --red-100: 64 26 34;
+  --red-200: 96 36 44;
+  --red-600: 248 113 113;
+  --red-700: 252 165 165;
+  --green-50: 22 44 33;
+  --green-100: 26 58 40;
+  --green-200: 34 84 54;
+  --green-600: 74 222 128;
+  --green-700: 134 239 172;
+  --amber-50: 48 36 16;
+  --amber-100: 64 48 18;
+  --amber-200: 92 68 22;
+  --amber-600: 251 191 36;
+  --amber-700: 252 211 77;
+  --blue-50: 24 30 56;
+  --blue-100: 30 40 74;
+  --blue-200: 40 56 104;
+  --blue-600: 147 197 253;
+  --blue-700: 191 219 254;
+  --purple-50: 40 26 60;
+  --purple-100: 52 32 82;
+  --purple-200: 72 44 116;
+  --purple-600: 181 123 255;
+  --purple-700: 205 168 255;
+  --orange-100: 66 34 16;
+  --gray-600: 184 175 196;
+  --gray-700: 220 212 228;
+}
+
+/* Base styles */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply antialiased;
+  background-color: rgb(var(--bg));
+  color: rgb(var(--text-primary));
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  transition: background-color 0.4s, color 0.4s;
+}
+
+html.halloween body {
+  background: radial-gradient(1200px 600px at 80% -10%, rgba(109, 40, 217, 0.28), transparent 60%), rgb(var(--bg));
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: rgb(var(--surface-secondary));
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgb(var(--gray-300));
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(var(--gray-200));
+}
+
+/* Focus styles */
+*:focus-visible {
+  @apply outline-none ring-2 ring-lc-orange ring-offset-2;
+}
+
+/* Card hover effect */
+.card-hover {
+  @apply transition-all duration-300 ease-out;
+}
+
+.card-hover:hover {
+  @apply shadow-medium -translate-y-0.5;
+}
+
+/* Glass effect */
+.glass {
+  background-color: rgb(var(--surface-default) / 0.8);
+  @apply backdrop-blur-md;
+}
+
+/* Gradient text */
+.gradient-text {
+  @apply bg-gradient-to-r from-lc-orange to-lc-orange-light bg-clip-text text-transparent;
+}
+
+/* Little Caesars brand gradient */
+.lc-gradient {
+  background: linear-gradient(135deg, #FF6000 0%, #FF8844 100%);
+}
+
+/* Orange accent gradient */
+.yellow-gradient {
+  background: linear-gradient(135deg, #FF6000 0%, #FF8844 100%);
+}
+
+/* Animation utilities */
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+.stagger-5 { animation-delay: 0.5s; }
+
+/* Number formatting */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Map container */
+.map-container {
+  @apply w-full h-full rounded-2xl overflow-hidden;
+}
+
+/* Chart tooltip */
+.recharts-tooltip-wrapper {
+  @apply !outline-none;
+}
+
+.custom-tooltip {
+  background-color: rgb(var(--surface-default) / 0.95);
+  @apply backdrop-blur-sm rounded-xl shadow-medium p-3 border;
+  border-color: rgb(var(--gray-100));
+}
+
+/* Glow pulse for Count Little Caesars */
+@keyframes glow-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+
+
+
+
+
+/* Count Little Caesars glow (Halloween mascot) */
+@keyframes glow-pulse {
+  0%, 100% { filter: drop-shadow(0 0 6px rgba(255, 96, 0, 0.75)) drop-shadow(0 0 14px rgba(181, 123, 255, 0.55)); }
+  50% { filter: drop-shadow(0 0 12px rgba(255, 96, 0, 0.95)) drop-shadow(0 0 26px rgba(181, 123, 255, 0.8)); }
+}
+.count-glow { animation: glow-pulse 3s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .count-glow { animation: none; filter: drop-shadow(0 0 8px rgba(255, 96, 0, 0.85)) drop-shadow(0 0 18px rgba(181, 123, 255, 0.6)); }
+}
