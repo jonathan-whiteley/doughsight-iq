@@ -1,0 +1,46 @@
+resources:
+  apps:
+    doughsight:
+      name: ${var.app_name}
+      description: "DoughSight IQ: Little Caesars store ops with forecasts, labor, Dough HQ, Genie and Genie One"
+      source_code_path: ..
+      # Store data and the embedded Genie agent run as the app's service principal;
+      # Genie One runs as the signed-in user through the user scopes below.
+      resources:
+        - name: sql_warehouse
+          sql_warehouse:
+            id: ${var.warehouse_id}
+            permission: CAN_USE
+        - name: genie_space
+          genie_space:
+            name: DoughSight IQ
+            space_id: ${resources.genie_spaces.doughsight_genie.id}
+            permission: CAN_RUN
+        # Optional Ticketmaster key for live local events. The secret must exist before deploy:
+        #   databricks secrets create-scope doughsight
+        #   databricks secrets put-secret doughsight ticketmaster_api_key
+        # then uncomment this block and the TICKETMASTER_API_KEY env entry below.
+        # - name: ticketmaster
+        #   secret:
+        #     scope: doughsight
+        #     key: ticketmaster_api_key
+        #     permission: READ
+      user_api_scopes:
+        - sql
+        - dashboards.genie
+        - genie
+      # Start command and env live here (app.yaml is not uploaded by the bundle), so the catalog
+      # and schema follow --var. Applied by `databricks bundle run doughsight`.
+      config:
+        command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+        env:
+          - name: DATABRICKS_WAREHOUSE_ID
+            value_from: sql_warehouse
+          - name: GENIE_SPACE_ID
+            value_from: genie_space
+          - name: CATALOG_NAME
+            value: ${var.catalog}
+          - name: SCHEMA_NAME
+            value: ${var.schema}
+          # - name: TICKETMASTER_API_KEY
+          #   value_from: ticketmaster

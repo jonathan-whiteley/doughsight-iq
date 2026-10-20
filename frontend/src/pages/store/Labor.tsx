@@ -257,9 +257,9 @@ export default function Labor() {
       </div>
 
       {/* ML Recommendations */}
-      <Card>
+      <Card ml={true}>
         <CardHeader 
-          title="AI Staffing Recommendations" 
+          title="ML Staffing Recommendations" 
           subtitle="Optimization suggestions based on forecast"
           icon={<AlertCircle className="w-5 h-5" />}
           action={

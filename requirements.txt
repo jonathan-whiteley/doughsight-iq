@@ -13,7 +13,7 @@ databricks-sql-connector[pyarrow]>=3.0.0
 pyarrow>=14.0.0
 
 # Database (Lakebase/PostgreSQL)
-sqlalchemy>=2.0.0
+sqlalchemy[asyncio]>=2.0.0
 asyncpg>=0.29.0
 sqlmodel>=0.0.14
 

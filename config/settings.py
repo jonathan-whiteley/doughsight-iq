@@ -88,8 +88,8 @@ class Settings(BaseSettings):
         description="Databricks workspace host (e.g. https://xxx.cloud.databricks.com)",
     )
     workspace_id: Optional[str] = Field(
-        default="66306676349647",
-        description="Workspace/org id used in the Genie embed URL (?o=...)",
+        default=None,
+        description="Workspace/org id for the Genie embed URL (?o=...); looked up from the workspace when unset",
     )
 
     # === External APIs ===

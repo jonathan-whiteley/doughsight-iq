@@ -6,14 +6,16 @@ interface CardProps extends HTMLMotionProps<"div"> {
   className?: string
   hover?: boolean
   padding?: 'none' | 'sm' | 'md' | 'lg'
+  ml?: boolean
 }
 
-export function Card({ 
-  children, 
-  className = '', 
+export function Card({
+  children,
+  className = '',
   hover = false,
   padding = 'md',
-  ...props 
+  ml = false,
+  ...props
 }: CardProps) {
   const paddingClasses = {
     none: '',
@@ -27,6 +29,7 @@ export function Card({
       className={`
         bg-surface rounded-2xl border border-gray-100 shadow-soft
         ${hover ? 'card-hover' : ''}
+        ${ml ? 'ml-card' : ''}
         ${paddingClasses[padding]}
         ${className}
       `}

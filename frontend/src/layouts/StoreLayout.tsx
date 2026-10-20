@@ -230,11 +230,6 @@ export default function StoreLayout() {
           staleTime: 1000 * 60 * 5,
         }),
         queryClient.prefetchQuery({
-          queryKey: ['deliveries', id],
-          queryFn: () => api.getDeliveries(id),
-          staleTime: 1000 * 60 * 5,
-        }),
-        queryClient.prefetchQuery({
           queryKey: ['order-suggestions', id],
           queryFn: () => api.getOrderSuggestions(id),
           staleTime: 1000 * 60 * 5,

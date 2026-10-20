@@ -20,6 +20,21 @@ from services.genie import genie_client
 
 router = APIRouter()
 
+_workspace_id: Optional[str] = None
+
+
+def _get_workspace_id(settings: Settings) -> Optional[str]:
+    """WORKSPACE_ID if set, else ask the workspace (cached), so a new workspace needs no config."""
+    global _workspace_id
+    if settings.workspace_id:
+        return settings.workspace_id
+    if _workspace_id is None:
+        try:
+            _workspace_id = str(genie_client.client.get_workspace_id())
+        except Exception:
+            return None
+    return _workspace_id
+
 
 # === Pydantic Models ===
 
@@ -206,8 +221,9 @@ async def get_genie_status(
             host = f"https://{host}"
         if host:
             embed_url = f"{host}/embed/genie/rooms/{settings.genie_space_id}"
-            if settings.workspace_id:
-                embed_url += f"?o={settings.workspace_id}"
+            workspace_id = _get_workspace_id(settings)
+            if workspace_id:
+                embed_url += f"?o={workspace_id}"
 
     return {
         "configured": is_configured,

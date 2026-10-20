@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Package, Truck, AlertTriangle, TrendingDown, Loader2, X, CheckCircle, ShoppingCart, DollarSign, Check } from 'lucide-react'
+import { Package, AlertTriangle, TrendingDown, Loader2, X, CheckCircle, ShoppingCart, DollarSign, Check } from 'lucide-react'
 import { useOutletContext } from 'react-router-dom'
 import { api } from '../../api/client'
 import { Card, CardHeader, StatCard } from '../../components/ui/Card'
@@ -336,11 +336,6 @@ export default function Inventory() {
     queryFn: () => api.getInventoryLevels(storeId, selectedCategory || undefined),
   })
 
-  const { data: deliveries, isLoading: loadingDeliveries } = useQuery({
-    queryKey: ['deliveries', storeId],
-    queryFn: () => api.getDeliveries(storeId),
-  })
-
   const { data: suggestions, isLoading: loadingSuggestions } = useQuery({
     queryKey: ['order-suggestions', storeId],
     queryFn: () => api.getOrderSuggestions(storeId),
@@ -405,135 +400,83 @@ export default function Inventory() {
         </AnimatePresence>
       </div>
 
-      {/* Main Grid */}
-      <div className="grid lg:grid-cols-3 gap-6">
-        {/* Inventory Levels */}
-        <Card className="lg:col-span-2">
-          <CardHeader 
-            title="Stock Levels" 
-            icon={<Package className="w-5 h-5" />}
-            action={
-              <div className="flex gap-1.5 overflow-x-auto">
-                {categories.map((cat) => (
-                  <button
-                    key={cat.key || 'all'}
-                    onClick={() => setSelectedCategory(cat.key)}
-                    className={`px-3 py-1.5 rounded-lg text-sm whitespace-nowrap transition-colors ${
-                      selectedCategory === cat.key
-                        ? 'bg-lc-orange text-white'
-                        : 'bg-gray-100 text-text-secondary hover:bg-gray-200'
-                    }`}
-                  >
-                    {cat.label}
-                  </button>
-                ))}
-              </div>
-            }
-          />
-          <AnimatePresence mode="wait">
-            {loadingLevels ? (
-              <LoadingState message="Loading inventory from Databricks SQL Warehouse..." />
-            ) : levels?.length ? (
-              <motion.div 
-                initial={{ opacity: 0 }} 
-                animate={{ opacity: 1 }}
-                className="space-y-2 max-h-96 overflow-y-auto"
-              >
-                {levels.map((item, index) => (
-                  <motion.div
-                    key={item.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.02 }}
-                    className="flex items-center gap-4 p-3 bg-surface-secondary rounded-xl"
-                  >
-                    <div className={`w-2 h-2 rounded-full flex-shrink-0 ${getStatusColor(item.status)}`} />
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-text-primary text-sm">{item.name}</p>
-                      <p className="text-xs text-text-tertiary">{item.category}</p>
-                    </div>
-                    <div className="w-28 flex-shrink-0 text-right">
-                      <p className="font-medium text-text-primary tabular-nums">
-                        {item.current_stock} {item.unit}
-                      </p>
-                      <p className="text-xs text-text-secondary">
-                        {item.days_supply} days supply
-                      </p>
-                    </div>
-                    <div className="w-20 flex-shrink-0">
-                      <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                        <div
-                          className={`h-full rounded-full ${getStatusColor(item.status)}`}
-                          style={{ width: `${Math.min(100, (item.current_stock / item.par_level) * 100)}%` }}
-                        />
-                      </div>
-                      <p className="text-xs text-text-tertiary mt-1 text-right tabular-nums">
-                        Par: {item.par_level}
-                      </p>
-                    </div>
-                    <div className="w-16 flex-shrink-0">
-                      <StatusBadge status={item.status} />
-                    </div>
-                  </motion.div>
-                ))}
-              </motion.div>
-            ) : (
-              <div className="py-8 text-center text-text-tertiary">No inventory data</div>
-            )}
-          </AnimatePresence>
-        </Card>
-
-        {/* Upcoming Deliveries */}
-        <Card>
-          <CardHeader 
-            title="Deliveries" 
-            icon={<Truck className="w-5 h-5" />}
-          />
-          <AnimatePresence mode="wait">
-            {loadingDeliveries ? (
-              <LoadingState message="Loading deliveries from Databricks SQL Warehouse..." />
-            ) : deliveries?.length ? (
-              <motion.div 
-                initial={{ opacity: 0 }} 
-                animate={{ opacity: 1 }}
-                className="space-y-4"
-              >
-                {deliveries.map((delivery, index) => (
-                  <motion.div
-                    key={delivery.id}
-                    initial={{ opacity: 0, x: 10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    className="p-4 border border-gray-100 rounded-xl"
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="font-medium text-text-primary">{delivery.supplier}</span>
-                      <Badge 
-                        variant={delivery.status === 'delivered' ? 'success' : 'info'}
-                        size="sm"
-                      >
-                        {delivery.status}
-                      </Badge>
-                    </div>
-                    <p className="text-sm text-text-secondary mb-2">
-                      {delivery.expected_date} • {delivery.expected_time}
-                    </p>
-                    <div className="text-xs text-text-tertiary">
-                      {delivery.items.slice(0, 3).map((item: any) => item.name).join(', ')}
-                      {delivery.items.length > 3 && ` +${delivery.items.length - 3} more`}
-                    </div>
-                  </motion.div>
-                ))}
-              </motion.div>
-            ) : (
-              <div className="py-8 text-center text-text-tertiary">No deliveries scheduled</div>
-            )}
-          </AnimatePresence>
-        </Card>
-      </div>
-
-      {/* Order Suggestions */}
+      {/* Inventory Levels */}
       <Card>
+        <CardHeader 
+          title="Stock Levels" 
+          icon={<Package className="w-5 h-5" />}
+          action={
+            <div className="flex gap-1.5 overflow-x-auto">
+              {categories.map((cat) => (
+                <button
+                  key={cat.key || 'all'}
+                  onClick={() => setSelectedCategory(cat.key)}
+                  className={`px-3 py-1.5 rounded-lg text-sm whitespace-nowrap transition-colors ${
+                    selectedCategory === cat.key
+                      ? 'bg-lc-orange text-white'
+                      : 'bg-gray-100 text-text-secondary hover:bg-gray-200'
+                  }`}
+                >
+                  {cat.label}
+                </button>
+              ))}
+            </div>
+          }
+        />
+        <AnimatePresence mode="wait">
+          {loadingLevels ? (
+            <LoadingState message="Loading inventory from Databricks SQL Warehouse..." />
+          ) : levels?.length ? (
+            <motion.div 
+              initial={{ opacity: 0 }} 
+              animate={{ opacity: 1 }}
+              className="space-y-2 max-h-96 overflow-y-auto"
+            >
+              {levels.map((item, index) => (
+                <motion.div
+                  key={item.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.02 }}
+                  className="flex items-center gap-4 p-3 bg-surface-secondary rounded-xl"
+                >
+                  <div className={`w-2 h-2 rounded-full flex-shrink-0 ${getStatusColor(item.status)}`} />
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-text-primary text-sm">{item.name}</p>
+                    <p className="text-xs text-text-tertiary">{item.category}</p>
+                  </div>
+                  <div className="w-28 flex-shrink-0 text-right">
+                    <p className="font-medium text-text-primary tabular-nums">
+                      {item.current_stock} {item.unit}
+                    </p>
+                    <p className="text-xs text-text-secondary">
+                      {item.days_supply} days supply
+                    </p>
+                  </div>
+                  <div className="w-20 flex-shrink-0">
+                    <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                      <div
+                        className={`h-full rounded-full ${getStatusColor(item.status)}`}
+                        style={{ width: `${Math.min(100, (item.current_stock / item.par_level) * 100)}%` }}
+                      />
+                    </div>
+                    <p className="text-xs text-text-tertiary mt-1 text-right tabular-nums">
+                      Par: {item.par_level}
+                    </p>
+                  </div>
+                  <div className="w-16 flex-shrink-0">
+                    <StatusBadge status={item.status} />
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          ) : (
+            <div className="py-8 text-center text-text-tertiary">No inventory data</div>
+          )}
+        </AnimatePresence>
+      </Card>
+      {/* Order Suggestions */}
+      <Card ml={true}>
         <CardHeader 
           title="ML Order Suggestions" 
           subtitle="Based on demand forecast and usage patterns"

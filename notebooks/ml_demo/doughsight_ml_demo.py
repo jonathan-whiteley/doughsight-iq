@@ -1,4 +1,8 @@
 # Databricks notebook source
+# /// script
+# [tool.databricks.environment]
+# environment_version = "6"
+# ///
 # MAGIC %md
 # MAGIC # DoughSight IQ: the production ML behind the app
 # MAGIC
@@ -380,25 +384,24 @@ def log_dough(model, run_name, extra_params):
         )
     return info.registered_model_version, metrics
 
+# COMMAND ----------
 
-def current_champion():
-    """The @champion version, if it takes today's feature set (a schema change means re-baselining)."""
-    try:
-        version = client.get_model_version_by_alias(DOUGH_MODEL, "champion").version
-    except Exception:
-        return None
-    schema = mlflow.pyfunc.load_model(f"models:/{DOUGH_MODEL}/{version}").metadata.get_input_schema()
-    return version if schema and schema.input_names() == DOUGH_FEATURES else None
+# MAGIC %md
+# MAGIC **Champion:** train, track, and register in Unity Catalog in a few lines. `registered_model_name` creates the next model version; the signature is inferred from the input example.
 
+# COMMAND ----------
 
-champion_version = current_champion()
-if champion_version:
-    print(f"Existing champion: v{champion_version}")
-else:
-    baseline = pipeline(Ridge(alpha=1.0)).fit(d_train_all[DOUGH_FEATURES], d_train_all.demand)
-    champion_version, _ = log_dough(baseline, "dough_baseline_ridge", {"model": "ridge", "alpha": 1.0})
-    client.set_registered_model_alias(DOUGH_MODEL, "champion", champion_version)
-    print(f"No compatible champion: registered the Ridge baseline as champion v{champion_version}")
+X_train, y_train = d_train_all[DOUGH_FEATURES], d_train_all.demand
+X_test, y_test = d_test[DOUGH_FEATURES], d_test.demand
+
+with mlflow.start_run(run_name="dough_baseline_ridge"):
+    ridge = pipeline(Ridge(alpha=1.0)).fit(X_train, y_train)
+    info = mlflow.sklearn.log_model(ridge, "model", input_example=X_test.head(3), registered_model_name=DOUGH_MODEL)
+    mlflow.log_metrics(business_eval(y_test, ridge.predict(X_test)))
+
+champion_version = info.registered_model_version
+client.set_registered_model_alias(DOUGH_MODEL, "champion", champion_version)
+print(f"Ridge baseline registered as {DOUGH_MODEL} v{champion_version} @champion")
 
 # COMMAND ----------
 

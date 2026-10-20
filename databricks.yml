@@ -1,0 +1,70 @@
+# DoughSight IQ as a Declarative Automation Bundle (DAB): the app, its Genie space and a grant job.
+# This path reads the variables below (override with --var or a target), NOT app.yaml
+# (app.yaml and config.local.env are only used by scripts/deploy.sh).
+#
+# Build the demo tables first (Genie can't create a space until they exist):
+#   python3 scripts/generate_lce_data.py --profile <profile> --warehouse <id> --catalog <catalog> --schema <schema>
+# Then:
+#   databricks bundle validate --strict
+#   databricks bundle deploy
+#   databricks bundle run grant_app_access   # USE CATALOG, USE SCHEMA, SELECT for the app's service principal
+#   databricks bundle run doughsight         # deploy the app code, start it, print the URL
+bundle:
+  name: doughsight-iq
+
+include:
+  - resources/*.yml
+
+# The app is deployed from the repo root, so keep the Node toolchain and dev files out of it:
+# a package.json in the app source makes Databricks Apps try a Node build, which times out.
+# frontend/dist (the committed build) is all the UI needs.
+sync:
+  exclude:
+    - app.yaml
+    - env.example
+    - frontend/src
+    - frontend/public
+    - frontend/index.html
+    - frontend/package.json
+    - frontend/package-lock.json
+    - frontend/tsconfig*.json
+    - frontend/vite.config.ts
+    - frontend/postcss.config.js
+    - frontend/tailwind.config.js
+    - docs
+    - tests
+    - scripts
+
+variables:
+  catalog:
+    description: Catalog with the demo schema (you need USE CATALOG on it)
+    default: jdub_demo
+  schema:
+    description: Schema holding the DoughSight tables (built by scripts/generate_lce_data.py)
+    default: lce_store_ops
+  warehouse_id:
+    description: SQL warehouse for the app, the Genie space and the grant job (serverless recommended)
+    default: 0168e23e24e6ae10
+  app_name:
+    # Development mode prefixes the job and Genie titles with [dev <you>] but NOT the app name, so pick a
+    # name nobody in the workspace uses. Never reuse the name of an app created outside this bundle
+    # (doughsight-iq is one): see "Adopting an existing app" in the README.
+    description: App name (lowercase letters, numbers, dashes; 30 characters max; unique in the workspace)
+    default: doughsight-iq-dab
+
+targets:
+  # Uses your default CLI profile (or pass -p <profile>).
+  dev:
+    mode: development
+    default: true
+
+  # Your own workspace: copy this block, uncomment it, fill it in, then add `-t mine` to every command.
+  # mine:
+  #   mode: development
+  #   workspace:
+  #     host: https://<your-workspace>.cloud.databricks.com
+  #   variables:
+  #     catalog: my_catalog
+  #     schema: my_schema
+  #     warehouse_id: 0123456789abcdef
+  #     app_name: my-doughsight

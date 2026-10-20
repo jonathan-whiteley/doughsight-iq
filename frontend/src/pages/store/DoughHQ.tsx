@@ -642,7 +642,7 @@ export default function DoughHQ() {
         </Card>
 
         {/* ML Dough Recommendations */}
-        <Card>
+        <Card ml={true}>
           <CardHeader
             title="ML Dough Recommendations"
             subtitle="Based on demand forecast and rush timing"

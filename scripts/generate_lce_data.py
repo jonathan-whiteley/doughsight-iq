@@ -4,7 +4,9 @@ Generate the DoughSight IQ (Little Caesars) demo dataset in jdub_demo.lce_store_
 Runs entirely as SQL on a warehouse (no cluster needed). Store and ingredient
 masters come from services/demo_data.py so the app and the Genie data always agree.
 
-Usage: .venv/bin/python scripts/generate_lce_data.py [--profile DEFAULT] [--warehouse 0168e23e24e6ae10]
+Usage: python3 scripts/generate_lce_data.py [--profile DEFAULT] [--warehouse 0168e23e24e6ae10]
+                                           [--catalog jdub_demo] [--schema lce_store_ops]
+Needs only the Databricks CLI and Python 3 (standard library). Drops and recreates the demo tables.
 """
 
 import argparse
@@ -273,7 +275,11 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--profile", default="DEFAULT")
     ap.add_argument("--warehouse", default="0168e23e24e6ae10")
+    ap.add_argument("--catalog", default="jdub_demo")
+    ap.add_argument("--schema", default="lce_store_ops")
     a = ap.parse_args()
+    global SCHEMA
+    SCHEMA = f"{a.catalog}.{a.schema}"
     for label, sql in statements():
         run(sql, a.profile, a.warehouse, label)
 

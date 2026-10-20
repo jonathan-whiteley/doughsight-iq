@@ -118,10 +118,6 @@ class ApiClient {
     return this.fetch<any[]>(`/inventory/levels/${storeId}${query}`)
   }
 
-  async getDeliveries(storeId: number) {
-    return this.fetch<any[]>(`/inventory/deliveries/${storeId}`)
-  }
-
   async getOrderSuggestions(storeId: number) {
     return this.fetch<any[]>(`/inventory/suggestions/${storeId}`)
   }

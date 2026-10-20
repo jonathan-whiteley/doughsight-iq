@@ -1,0 +1,17 @@
+resources:
+  jobs:
+    grant_app_access:
+      name: doughsight-grant-app-access
+      description: Grant the app's service principal USE CATALOG, USE SCHEMA and SELECT on the demo schema (serverless)
+      # Bundles can only grant on schemas they create, so the UC grants run as a job (as you).
+      # If you can't GRANT on the schema, the run prints the statements for its owner.
+      # Genie CAN_RUN is set by the bundle itself (resources/doughsight.genie_space.yml).
+      parameters:
+        - {name: catalog, default: "${var.catalog}"}
+        - {name: schema, default: "${var.schema}"}
+        - {name: warehouse_id, default: "${var.warehouse_id}"}
+        - {name: app_name, default: "${resources.apps.doughsight.name}"}
+      tasks:
+        - task_key: grant_app_access
+          notebook_task:
+            notebook_path: ../jobs/grant_app_access.py

@@ -211,3 +211,28 @@ html.halloween body {
 @media (prefers-reduced-motion: reduce) {
   .count-glow { animation: none; filter: drop-shadow(0 0 8px rgba(255, 96, 0, 0.85)) drop-shadow(0 0 18px rgba(181, 123, 255, 0.6)); }
 }
+
+/* ML Card glow (Spooky mode only) */
+@keyframes ml-card-glow {
+  0%, 100% {
+    border-color: rgb(255, 96, 0);
+    box-shadow: 0 0 12px rgba(255, 96, 0, 0.4), 0 0 24px rgba(181, 123, 255, 0.3);
+  }
+  50% {
+    border-color: rgb(181, 123, 255);
+    box-shadow: 0 0 20px rgba(255, 96, 0, 0.6), 0 0 40px rgba(181, 123, 255, 0.5);
+  }
+}
+
+html.halloween .ml-card {
+  border-width: 1px;
+  animation: ml-card-glow 3s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.halloween .ml-card {
+    animation: none;
+    border-color: rgb(255, 96, 0);
+    box-shadow: 0 0 16px rgba(255, 96, 0, 0.5), 0 0 32px rgba(181, 123, 255, 0.4);
+  }
+}

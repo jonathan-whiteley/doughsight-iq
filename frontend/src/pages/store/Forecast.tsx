@@ -171,7 +171,7 @@ export default function Forecast() {
       {/* Charts Row */}
       <div className="grid lg:grid-cols-2 gap-6">
         {/* 7-Day Forecast */}
-        <Card>
+        <Card ml={true}>
           <CardHeader 
             title="7-Day Forecast" 
             subtitle="Daily transaction predictions"
@@ -393,7 +393,7 @@ export default function Forecast() {
         </Card>
 
         {/* Hourly Forecast */}
-        <Card>
+        <Card ml={true}>
           <CardHeader 
             title="Today's Hourly Forecast" 
             subtitle="Transaction predictions by hour"
@@ -462,7 +462,7 @@ export default function Forecast() {
       </div>
 
       {/* Prep Recommendations */}
-      <Card>
+      <Card ml={true}>
         <CardHeader 
           title="Prep Recommendations" 
           subtitle="Based on lunch rush forecast"
